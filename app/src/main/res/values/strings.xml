@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">My Notes</string>
+    <string name="notes">Нотатки</string>
+    <string name="folder">folder</string>
 </resources>
