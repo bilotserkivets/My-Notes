@@ -3,6 +3,7 @@ package com.example.mynotes.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +27,54 @@ fun MainScreen() {
                 title = { Text(text = stringResource(R.string.notes))
                 },
                 contentColor = Color.White,
-                backgroundColor = Green800
+                backgroundColor = Green800,
+                navigationIcon = {
+                   IconButton(
+                       onClick = {
+                       /*TODO*/
+                       }) {
+                       Icon(
+                           imageVector = Icons.Outlined.Menu,
+                           contentDescription = stringResource(id = R.string.menu),
+                           modifier = Modifier.size(40.dp)
+                       )
+                   }
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                        /*TODO*/ 
+                        }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_search),
+                            contentDescription = stringResource(id = R.string.search),
+                            modifier = Modifier.size(40.dp),
+                            tint = Color.White
+                         )
+                    }
+                    IconButton(
+                        onClick = {
+                            /*TODO*/
+                        }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_sort),
+                            contentDescription = stringResource(id = R.string.sort),
+                            modifier = Modifier.size(40.dp),
+                            tint = Color.White
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            /*TODO*/
+                        }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_add),
+                            contentDescription = stringResource(id = R.string.add),
+                            modifier = Modifier.size(40.dp),
+                            tint = Color.White
+                        )
+                    }
+                }
             )
         }
     ) {
@@ -49,7 +97,7 @@ fun CategoryItem() {
         Icon(
             painter = painterResource(id = R.drawable.ic_folder),
             contentDescription = stringResource(id = R.string.folder),
-            modifier = Modifier.size(64.dp),
+            modifier = Modifier.size(56.dp),
             tint = Green800
         )
         Text(
