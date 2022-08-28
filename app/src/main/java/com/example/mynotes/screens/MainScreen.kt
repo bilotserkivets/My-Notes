@@ -1,15 +1,19 @@
 package com.example.mynotes.screens
 
+import android.app.Application
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -17,10 +21,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.mynotes.NotesViewModel
+import com.example.mynotes.NotesViewModelFactory
 import com.example.mynotes.R
+import com.example.mynotes.model.Note
 import com.example.mynotes.navigation.NotesNavRoute
 import com.example.mynotes.ui.theme.BottomSheetBackground
 import com.example.mynotes.ui.theme.DividerInMenu
@@ -31,11 +38,13 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MainScreen(navController: NavHostController) {
+fun MainScreen(navController: NavHostController, viewModel: NotesViewModel) {
 
     val coroutineScope = rememberCoroutineScope()
     val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     var expanded by remember { mutableStateOf(false) }
+
+    val notes = viewModel.getAllNotes().observeAsState(listOf()).value
 
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
@@ -264,9 +273,9 @@ fun MainScreen(navController: NavHostController) {
             Column(modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 16.dp)) {
-                CategoryItem()
-                NoteItem()
-                NoteCheckItem()
+                //CategoryItem()
+                NoteItem(notes = notes)
+                //NoteCheckItem()
             }
         }
     }
@@ -295,36 +304,39 @@ fun CategoryItem() {
 }
 
 @Composable
-fun NoteItem() {
-    Column(modifier = Modifier
+fun NoteItem(notes: List<Note>) {
+    LazyColumn(modifier = Modifier
         .fillMaxWidth()
-        .padding(vertical = 8.dp)
-    ) {
-        Text(
-            text = "Title",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-            )
-        Text(
-            text = "Lorem ipsum lorem ipsum text How are you. Hello world Lorem ipsum lorem ipsum text How are you. Hello world Lorem ipsum lorem ipsum text How are you. Hello world",
-            fontSize = 16.sp,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-            ,
-            horizontalArrangement = Arrangement.End
-            ) {
+        .padding(vertical = 8.dp)) {
+        items(notes) { note ->
             Text(
-                text = "25.08.2022",
-                fontSize = 12.sp
+                text = note.noteTitle,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = note.noteDescription,
+                fontSize = 16.sp,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                ,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Text(
+                    text = note.createDataNote,
+                    fontSize = 12.sp
                 )
+            }
+            Divider(color = Green800, thickness = 2.dp)
         }
-        Divider(color = Green800, thickness = 2.dp)
+
     }
+
 }
 
 @Composable
@@ -369,6 +381,9 @@ fun NoteCheckItem() {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPrev() {
+    val context = LocalContext.current
+    val nViewModel: NotesViewModel =
+        viewModel(factory = NotesViewModelFactory(context.applicationContext as Application))
     val navController = rememberNavController()
-    MainScreen(navController)
+    MainScreen(navController, nViewModel)
 }

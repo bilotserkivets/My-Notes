@@ -15,6 +15,7 @@
     <string name="share">Share</string>
     <string name="note_image">Note image</string>
     <string name="note">Note</string>
+    <string name="note_description">Note description</string>
     <string name="checklist_image">Checklist image</string>
     <string name="checklist">Checklist</string>
     <string name="folder_image">Folder image</string>
