@@ -1,6 +1,7 @@
 package com.example.mynotes.screens
 
 import android.app.Application
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -27,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mynotes.NotesViewModel
 import com.example.mynotes.NotesViewModelFactory
 import com.example.mynotes.R
+import com.example.mynotes.model.Category
 import com.example.mynotes.model.Note
 import com.example.mynotes.navigation.NotesNavRoute
 import com.example.mynotes.ui.theme.BottomSheetBackground
@@ -45,6 +47,7 @@ fun MainScreen(navController: NavHostController, viewModel: NotesViewModel) {
     var expanded by remember { mutableStateOf(false) }
 
     val notes = viewModel.getAllNotes().observeAsState(listOf()).value
+    //val categories = viewModel.
 
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
@@ -212,7 +215,7 @@ fun MainScreen(navController: NavHostController, viewModel: NotesViewModel) {
                             onDismissRequest = { expanded = false }) {
                             DropdownMenuItem(
                                 onClick = {
-                                    navController.navigate(NotesNavRoute.NoteScreen.route)
+                                    navController.navigate(NotesNavRoute.AddNoteScreen.route)
                                 }) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_note),
@@ -274,7 +277,7 @@ fun MainScreen(navController: NavHostController, viewModel: NotesViewModel) {
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 16.dp)) {
                 //CategoryItem()
-                NoteItem(notes = notes)
+                NoteItem(navController = navController, notes = notes)
                 //NoteCheckItem()
             }
         }
@@ -283,7 +286,7 @@ fun MainScreen(navController: NavHostController, viewModel: NotesViewModel) {
 }
 
 @Composable
-fun CategoryItem() {
+fun CategoryItem(category: Category) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -295,7 +298,7 @@ fun CategoryItem() {
             tint = Green800
         )
         Text(
-            text = "Products",
+            text = category.nameCategory,
             fontSize = 24.sp,
             modifier = Modifier.padding(horizontal = 8.dp)
         )
@@ -304,11 +307,18 @@ fun CategoryItem() {
 }
 
 @Composable
-fun NoteItem(notes: List<Note>) {
+fun NoteItem(navController: NavHostController, notes: List<Note>) {
     LazyColumn(modifier = Modifier
         .fillMaxWidth()
         .padding(vertical = 8.dp)) {
         items(notes) { note ->
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                navController.navigate(NotesNavRoute.NoteScreen.route + "/${note.id}")
+            }
+            ) {
+            }
             Text(
                 text = note.noteTitle,
                 fontSize = 20.sp,
@@ -318,7 +328,10 @@ fun NoteItem(notes: List<Note>) {
                 text = note.noteDescription,
                 fontSize = 16.sp,
                 maxLines = 3,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.clickable {
+                    navController.navigate(NotesNavRoute.NoteScreen.route + "/${note.id}")
+                }
             )
             Row(
                 modifier = Modifier

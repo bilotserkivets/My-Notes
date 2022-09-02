@@ -12,6 +12,9 @@ interface NotesRoomDao {
     @Query("SELECT * FROM notes_table")
     fun getAllNote(): LiveData<List<Note>>
 
+    @Query("SELECT * FROM notes_table WHERE id LIKE :noteId LIMIT 1")
+    fun getNoteItem(noteId: Int) : Note
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun createNote(note: Note)
 

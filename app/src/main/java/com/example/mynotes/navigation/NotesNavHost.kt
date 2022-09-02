@@ -5,9 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mynotes.NotesViewModel
-import com.example.mynotes.screens.ChecklistScreen
-import com.example.mynotes.screens.MainScreen
-import com.example.mynotes.screens.NoteScreen
+import com.example.mynotes.screens.*
 
 @Composable
 fun NotesNavHost(viewModel: NotesViewModel) {
@@ -17,11 +15,17 @@ fun NotesNavHost(viewModel: NotesViewModel) {
         composable(NotesNavRoute.MainScreen.route) {
             MainScreen(navController = navController, viewModel = viewModel)
         }
-        composable(NotesNavRoute.NoteScreen.route) {
-            NoteScreen(navController = navController, viewModel = viewModel)
+        composable(NotesNavRoute.NoteScreen.route + "/{id}") { backStack ->
+            NoteScreen(navController = navController, viewModel = viewModel, noteId = backStack.arguments?.getString("id"))
+        }
+        composable(NotesNavRoute.AddNoteScreen.route) {
+            AddNoteScreen(navController = navController, viewModel = viewModel)
         }
         composable(NotesNavRoute.ChecklistScreen.route) {
             ChecklistScreen(navController = navController, viewModel = viewModel)
+        }
+        composable(NotesNavRoute.EditNoteScreen.route + "/{id}") { backStack ->
+            EditNoteScreen(navController = navController, viewModel = viewModel, noteId = backStack.arguments?.getString("id"))
         }
     }
 }

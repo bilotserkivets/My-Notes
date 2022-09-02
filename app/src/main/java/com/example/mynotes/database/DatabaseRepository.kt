@@ -10,6 +10,8 @@ interface DatabaseRepository {
 
     val readAllNotes: LiveData<List<Note>>
 
+    fun getNoteItem(noteId: Int) : Note
+
     suspend fun createNote(note: Note, onSuccess: () -> Unit)
 
     suspend fun updateNote(note: Note, onSuccess: () -> Unit)

@@ -3,17 +3,15 @@ package com.example.mynotes.screens
 import android.app.Application
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,11 +28,15 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun NoteScreen(navController: NavHostController, viewModel: NotesViewModel) {
-    var noteTitle by remember { mutableStateOf("") }
-    var noteDescription by remember { mutableStateOf("") }
-    val sdf = SimpleDateFormat("HH:mm dd.mm.yyyy")
-    val currentDateAndTime = sdf.format(Date())
+fun NoteScreen(navController: NavHostController, viewModel: NotesViewModel, noteId: String?) {
+
+    val notes = viewModel.getAllNotes().observeAsState(listOf()).value
+    val note = notes.firstOrNull {
+        it.id == noteId?.toInt() } ?: Note(
+            noteTitle = stringResource(id = R.string.empty),
+            noteDescription = stringResource(id = R.string.empty),
+            createDataNote = stringResource(id = R.string.empty)
+        )
 
     Scaffold(
         topBar = {
@@ -49,13 +51,7 @@ fun NoteScreen(navController: NavHostController, viewModel: NotesViewModel) {
                 ) {
                     Row(modifier = Modifier.fillMaxWidth(0.2f)) {
                         IconButton(onClick = {
-                            viewModel.createNote(Note(
-                                noteTitle = noteTitle,
-                                noteDescription = noteDescription,
-                                createDataNote = currentDateAndTime
-                                )) {
                                 navController.navigate(NotesNavRoute.MainScreen.route)
-                            }
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_check),
@@ -67,7 +63,27 @@ fun NoteScreen(navController: NavHostController, viewModel: NotesViewModel) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
-                        ) {
+                    ) {
+                        IconButton(onClick = {
+                                navController.navigate(NotesNavRoute.EditNoteScreen.route + "/${note.id}")
+                        }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_edit),
+                                contentDescription = stringResource(id = R.string.icon_edit),
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                        IconButton(onClick = {
+                            viewModel.deleteNote(note = note) {
+                                navController.navigate(NotesNavRoute.MainScreen.route)
+                            }
+                        }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_delete),
+                                contentDescription = stringResource(id = R.string.check_delete),
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
                         IconButton(onClick = {
                             /*TODO*/
                         }) {
@@ -86,48 +102,30 @@ fun NoteScreen(navController: NavHostController, viewModel: NotesViewModel) {
                 .fillMaxSize()
                 .padding(8.dp)
             ) {
-                TextField(
-                    value = noteTitle,
-                    onValueChange = { noteTitle = it },
-                    placeholder = { Text(
-                        text = stringResource(id = R.string.title),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
-                        ) },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults.textFieldColors(
-                        textColor = Color.Black,
-                        backgroundColor = Color.White)
+                Text(
+                    text = note.noteTitle,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
                 )
-
-                TextField(
-                    value = noteDescription,
-                    onValueChange = { noteDescription = it },
-                    placeholder = { Text(
-                        text = stringResource(id = R.string.note_description),
-                        fontSize = 24.sp,
-                    ) },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults
-                        .textFieldColors(
-                            textColor = Color.Black,
-                            backgroundColor = Color.White,
-                            focusedLabelColor = Color.White,
-                            disabledLabelColor = Color.White
-                            )
+                Divider(color = Green800, thickness = 2.dp)
+                Text(
+                    text = note.noteDescription,
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(vertical = 4.dp)
                 )
             }
-
         }
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun NoteScreenPrev() {
-    val context = LocalContext.current
-    val nViewModel: NotesViewModel =
-        viewModel(factory = NotesViewModelFactory(context.applicationContext as Application))
-    val navController = rememberNavController()
-    NoteScreen(navController, nViewModel)
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun NoteScreenPrev() {
+//    val context = LocalContext.current
+//    val nViewModel: NotesViewModel =
+//        viewModel(factory = NotesViewModelFactory(context.applicationContext as Application))
+//    val navController = rememberNavController()
+//    NoteScreen(navController, nViewModel, noteId = )
+//}

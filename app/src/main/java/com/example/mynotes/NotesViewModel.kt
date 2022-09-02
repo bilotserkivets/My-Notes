@@ -58,5 +58,4 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
 }
