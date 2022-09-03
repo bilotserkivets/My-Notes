@@ -47,8 +47,10 @@ fun MainScreen(navController: NavHostController, viewModel: NotesViewModel) {
     var expanded by remember { mutableStateOf(false) }
 
     val notes = viewModel.getAllNotes().observeAsState(listOf()).value
-    //val categories = viewModel.
-    var isDialog by remember { mutableStateOf(false) }
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    val categories = viewModel.getAllCategory().observeAsState(listOf()).value
 
 
 
@@ -255,7 +257,7 @@ fun MainScreen(navController: NavHostController, viewModel: NotesViewModel) {
                             Divider(color = DividerInMenu, thickness = 2.dp)
                             DropdownMenuItem(
                                 onClick = {
-                                    isDialog = true
+                                    showDialog = true
                                 }) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_folder),
@@ -274,15 +276,15 @@ fun MainScreen(navController: NavHostController, viewModel: NotesViewModel) {
                         }
                     }
                 )
-                if (isDialog) {
-                    DialogAddCategory(isDialog)
-                }
+                    if (showDialog) {
+                        DialogAddCategory(viewModel = viewModel, setShowDialog = { showDialog = it })
+                    }
             }
         ) {
             Column(modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 16.dp)) {
-                //CategoryItem()
+                .padding(horizontal = 8.dp)) {
+                CategoryItem(navController = navController, categories = categories)
                 NoteItem(navController = navController, notes = notes)
                 //NoteCheckItem()
             }
@@ -292,24 +294,33 @@ fun MainScreen(navController: NavHostController, viewModel: NotesViewModel) {
 }
 
 @Composable
-fun CategoryItem(category: Category) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_folder),
-            contentDescription = stringResource(id = R.string.folder),
-            modifier = Modifier.size(56.dp),
-            tint = Green800
-        )
-        Text(
-            text = category.nameCategory,
-            fontSize = 24.sp,
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
+fun CategoryItem(navController: NavHostController, categories: List<Category>) {
+    LazyColumn(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = 8.dp)) {
+        items(categories) { category ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp, 16.dp, 8.dp, 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_folder),
+                    contentDescription = stringResource(id = R.string.folder),
+                    modifier = Modifier.size(56.dp),
+                    tint = Green800
+                )
+                Text(
+                    text = category.nameCategory,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+            }
+            Divider(color = Green800, thickness = 2.dp)
+        }
     }
-    Divider(color = Green800, thickness = 2.dp)
+
 }
 
 @Composable

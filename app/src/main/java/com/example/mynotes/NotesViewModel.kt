@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mynotes.database.room.AppRoomDatabase
 import com.example.mynotes.database.room.repository.NotesRoomRepository
+import com.example.mynotes.model.Category
 import com.example.mynotes.model.Note
 import com.example.mynotes.utils.REPOSITORY
 import kotlinx.coroutines.Dispatchers
@@ -58,4 +59,16 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
+    fun createCategory(category: Category, onSuccess: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            REPOSITORY.createCategory(category = category) {
+                viewModelScope.launch(Dispatchers.Main) {
+                    onSuccess()
+                }
+            }
+        }
+    }
+
+    fun getAllCategory() = REPOSITORY.readAllCategories
 }

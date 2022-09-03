@@ -116,7 +116,10 @@ fun EditNoteScreen(navController: NavHostController, viewModel: NotesViewModel, 
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.textFieldColors(
                         textColor = Color.Black,
-                        backgroundColor = Color.White
+                        backgroundColor = Color.White,
+                        cursorColor = Color.Gray,
+                        focusedIndicatorColor = Green800,
+                        unfocusedIndicatorColor = Green800
                     ),
                     textStyle = TextStyle(fontSize = 24.sp)
                 )
@@ -135,7 +138,10 @@ fun EditNoteScreen(navController: NavHostController, viewModel: NotesViewModel, 
                             textColor = Color.Black,
                             backgroundColor = Color.White,
                             focusedLabelColor = Color.White,
-                            disabledLabelColor = Color.White
+                            disabledLabelColor = Color.White,
+                            cursorColor = Color.Gray,
+                            focusedIndicatorColor = Color.White,
+                            unfocusedIndicatorColor = Color.White
                         ),
                     textStyle = TextStyle(fontSize = 18.sp)
                 )

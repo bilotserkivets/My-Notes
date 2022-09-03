@@ -54,7 +54,7 @@ fun AddNoteScreen(navController: NavHostController, viewModel: NotesViewModel) {
                 ) {
                     Row(modifier = Modifier.fillMaxWidth(0.2f)) {
                         IconButton(onClick = {
-
+                            if (noteTitle.isNotEmpty() || noteDescription.isNotEmpty()) {
                                 viewModel.createNote(
                                     Note(
                                         noteTitle = noteTitle,
@@ -64,6 +64,9 @@ fun AddNoteScreen(navController: NavHostController, viewModel: NotesViewModel) {
                                 ) {
                                     navController.navigate(NotesNavRoute.MainScreen.route)
                                 }
+                            } else {
+                                navController.navigate(NotesNavRoute.MainScreen.route)
+                            }
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_check),
@@ -108,9 +111,13 @@ fun AddNoteScreen(navController: NavHostController, viewModel: NotesViewModel) {
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.textFieldColors(
                         textColor = Color.Black,
-                        backgroundColor = Color.White
+                        backgroundColor = Color.White,
+                        cursorColor = Color.Gray,
+                        focusedIndicatorColor = Green800,
+                        unfocusedIndicatorColor = Green800
                     ),
                     textStyle = TextStyle(fontSize = 24.sp)
+
                 )
                 TextField(
                     value = noteDescription,
@@ -127,7 +134,10 @@ fun AddNoteScreen(navController: NavHostController, viewModel: NotesViewModel) {
                             textColor = Color.Black,
                             backgroundColor = Color.White,
                             focusedLabelColor = Color.White,
-                            disabledLabelColor = Color.White
+                            disabledLabelColor = Color.White,
+                            cursorColor = Color.Gray,
+                            focusedIndicatorColor = Color.White,
+                            unfocusedIndicatorColor = Color.White
                         ),
                     textStyle = TextStyle(fontSize = 18.sp)
                 )

@@ -19,15 +19,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
+import com.example.mynotes.NotesViewModel
+import com.example.mynotes.model.Category
 import com.example.mynotes.navigation.NotesNavRoute
 import com.example.mynotes.ui.theme.Green800
 import com.example.mynotes.ui.theme.GreenDark
 
 @Composable
-fun DialogAddCategory(isDialog: Boolean) {
+fun DialogAddCategory(viewModel: NotesViewModel, setShowDialog: (Boolean) -> Unit) {
     var nameCategory by remember { mutableStateOf("") }
 
-    Dialog(onDismissRequest = { isDialog }) {
+
+    Dialog(onDismissRequest = { setShowDialog(false) }) {
         Surface(
             color = Color.White,
             modifier = Modifier.border(
@@ -80,7 +83,7 @@ fun DialogAddCategory(isDialog: Boolean) {
                         modifier = Modifier
                             .padding(end = 32.dp)
                             .clickable {
-                                //  navController.navigate(NotesNavRoute.MainScreen.route)
+                                setShowDialog(false)
                             }
                     )
                     Text(
@@ -89,7 +92,9 @@ fun DialogAddCategory(isDialog: Boolean) {
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.clickable {
-                           // navController.navigate(NotesNavRoute.MainScreen.route)
+                            viewModel.createCategory(Category(nameCategory = nameCategory)){
+                                setShowDialog(false)
+                            }
                         }
                     )
                 }
