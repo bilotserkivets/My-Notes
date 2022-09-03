@@ -48,6 +48,9 @@ fun MainScreen(navController: NavHostController, viewModel: NotesViewModel) {
 
     val notes = viewModel.getAllNotes().observeAsState(listOf()).value
     //val categories = viewModel.
+    var isDialog by remember { mutableStateOf(false) }
+
+
 
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
@@ -252,7 +255,7 @@ fun MainScreen(navController: NavHostController, viewModel: NotesViewModel) {
                             Divider(color = DividerInMenu, thickness = 2.dp)
                             DropdownMenuItem(
                                 onClick = {
-                                    /*TODO*/
+                                    isDialog = true
                                 }) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_folder),
@@ -271,6 +274,9 @@ fun MainScreen(navController: NavHostController, viewModel: NotesViewModel) {
                         }
                     }
                 )
+                if (isDialog) {
+                    DialogAddCategory(isDialog)
+                }
             }
         ) {
             Column(modifier = Modifier
@@ -315,8 +321,8 @@ fun NoteItem(navController: NavHostController, notes: List<Note>) {
             Column(modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                navController.navigate(NotesNavRoute.NoteScreen.route + "/${note.id}")
-            }
+                    navController.navigate(NotesNavRoute.NoteScreen.route + "/${note.id}")
+                }
             ) {
             }
             Text(
